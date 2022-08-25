@@ -152,6 +152,7 @@ function setup() {
       }
     }
   });
+  document.body.style.zoom = "90%" 
 }
 function draw() {
   background(51);
