@@ -1,62 +1,108 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.8.0/p5.js"></script>
-    <script src="main.js"></script>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<style>
-.slidecontainer {
-  width: 85%;
-}
+  <head>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.8.0/p5.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/luxon/3.0.1/luxon.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-adapter-luxon/1.0.0-beta.1/chartjs-adapter-luxon.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-streaming/2.0.0/chartjs-plugin-streaming.min.js"></script>
+      <script src="main.js"></script>
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <style>
+        body {
+          width: 100%;
+          display: flex;
+          justify-content: flex-start;
+        }
+        #geneCharts{
+          width: 32.5%;
+          display: flex;
+          flex-direction: row;
+          justify-content: space-between;
+        }
+        #chart{
+          width: 50%;
+        }
+        p {
+          font-size: 25px;
+          margin-right: 10px;
+        }
 
-.slider {
-  -webkit-appearance: none;
-  width: 90%;
-  height: 25px;
-  background: #d3d3d3;
-  outline: none;
-  opacity: 0.7;
-  -webkit-transition: .2s;
-  transition: opacity .2s;
-}
+        .slidecontainer {
+          width: 800px;
+          display: flex;
+          justify-content: flex-start;
+          align-items: center;
+          height: 50px;
+        }
 
-.slider:hover {
-  opacity: 1;
-}
+        .slider {
+          -webkit-appearance: none;
+          width: 80%;
+          height: 20px;
+          background: #d3d3d3;
+          outline: none;
+          opacity: 0.7;
+          -webkit-transition: .2s;
+          transition: opacity .2s;
+        }
 
-.slider::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 25px;
-  height: 25px;
-  background: #4CAF50;
-  cursor: pointer;
-}
+        .slider:hover {
+          opacity: 1;
+        }
 
-.slider::-moz-range-thumb {
-  width: 25px;
-  height: 25px;
-  background: #4CAF50;
-  cursor: pointer;
-}
-</style>
-</head>
-<body>
+        .slider::-webkit-slider-thumb {
+          -webkit-appearance: none;
+          appearance: none;
+          width: 20px;
+          height: 20px;
+          background: #4CAF50;
+          cursor: pointer;
+        }
 
-<p>Drag the slider to change the steps per second.</p>
+        .slider::-moz-range-thumb {
+          width: 15px;
+          height: 15px;
+          background: #4CAF50;
+          cursor: pointer;
+        }
+      </style>
+      </head>
+  <body>
+    <div id="simulation">
+      <div class="slidecontainer">
+        <p id="info">FPS: <span id="fps"></span></p>
+        <input type="range" min="1" max="60" value="60" class="slider" id="Slider">
+      </div>
+      <div class="slidecontainer">
+        <p id="info">SPEED: <span id="speed"></span></p>
+        <input type="range" min="1" max="10" step="0.1" value="1" class="slider" id="simSlider">
+      </div>
 
-<div class="slidecontainer">
-  <input type="range" min="1" max="60" value="5" class="slider" id="Slider">
-  <p>FPS: <span id="fps"></span></p>
-</div>
-
-<script id = "SlIdEr">
-  var slider = document.getElementById("Slider");
-  var output = document.getElementById("fps");
-  output.innerHTML = slider.value;
-  slider.oninput = function() {
-    output.innerHTML = this.value;
-  }
-</script>
-</body>
+      <script id = "fpsSlider">
+        var slider = document.getElementById("Slider");
+        var output = document.getElementById("fps");
+        output.innerHTML = slider.value;
+        slider.oninput = function() {
+          output.innerHTML = this.value;
+        }
+      </script>
+      <script id = "simulationSpeed">
+        var speedSlider = document.getElementById("simSlider");
+        var speedOutput = document.getElementById("speed");
+        speedOutput.innerHTML = speedSlider.value;
+        speedSlider.oninput = function() {
+          speedOutput.innerHTML = this.value;
+        }
+      </script>
+    </div>
+    <div id="chart">
+      <canvas id="populationChart" width="800" height="500"></canvas>
+      <div id="geneCharts">
+        <canvas id="sizeChart" class="geneChart" width="260" height="400"></canvas>
+        <canvas id="speedChart" class="geneChart" width="260" height="400"></canvas>
+        <canvas id="angularSpeedChart" class="geneChart" width="260" height="400"></canvas>
+      </div>
+    </div>
+  </body>
 </html>

@@ -1,25 +1,165 @@
-var population,maxpop;
-let mutationRate, reproductionRate;
-let width, height;
-let minGene, maxGene;
-var slider = document.getElementById("SlIdEr");
+var population, populationChart, sizeChart, speedChart, angleSpeedChart;
+var date = new Date();
+const width=800, height=800;
+var slider = document.getElementById("fpsSlider");
+var speedSlider = document.getElementById("simulationSpeed");
+const mutationRate = 0.1, reproductionRate = 0.0005, initialPop = 100;
+const sizeCoef=50, speedCoef=500, hpCoef=100, eatCoef=0.5, compareCoef=1.2, costCoef=2.5;
+
 function setup() {
-  width = 1280;
-  height = 720;
-  createCanvas(width,height);
-  frameRate(5);
-  mutationRate = 0.01;
-  reproductionRate = 0.005;
-  minGene = 0.5;
-  maxGene = 1;
-  maxpop = 50;
-  population = new Population(maxpop);
+  var simulationCanvas = createCanvas(width,height);
+  simulationCanvas.parent("simulation");
+  frameRate(60);
+  population = new Population(initialPop);
+
+  let ctx = document.getElementById('populationChart').getContext('2d');
+  populationChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      datasets: [
+        {
+          data: [{x:0, y:initialPop}],
+          label: 'Population',
+          fill: false,
+          borderColor: '#000000',
+          cubicInterpolationMode: 'monotone',
+        },
+      ]
+    },
+    options: {
+      responsive: true,
+      scales: {
+          x: {
+              type: 'realtime',
+              realtime: {
+                  onRefresh: chart => {
+                      chart.data.datasets[0].data.push({
+                          x: Date.now(),
+                          y: population.POP.length
+                      });
+                  }
+              }
+          },
+          y: {
+            suggestedMin: 0,
+            suggestedMax: initialPop*1.5
+          }
+      }
+    }
+  });
+  ctx = document.getElementById("sizeChart").getContext('2d');
+  sizeChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      datasets: [
+        {
+          data: [{x:0, y:0}],
+          label: 'Average Size Gene',
+          fill: false,
+          borderColor: '#ff0000',
+          cubicInterpolationMode: 'monotone',
+        },
+      ]
+    },
+    options: {
+      responsive: true,
+      scales: {
+        x: {
+            type: 'realtime',
+            realtime: {
+                onRefresh: chart => {
+                    chart.data.datasets[0].data.push({
+                        x: Date.now(),
+                        y: population.POP.reduce((acc, curr) => acc + curr.dna.genes[0], 0)/population.POP.length
+                    });
+                }
+            }
+        },
+        y: {
+          suggestedMin: 0,
+          suggestedMax: 1
+        }
+      }
+    }
+  });
+  ctx = document.getElementById("speedChart").getContext('2d');
+  speedChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      datasets: [
+        {
+          data: [{x:0, y:0}],
+          label: 'Average Speed Gene',
+          fill: false,
+          borderColor: '#00ff00',
+          cubicInterpolationMode: 'monotone',
+        },
+      ]
+    },
+    options: {
+      responsive: true,
+      scales: {
+        x: {
+            type: 'realtime',
+            realtime: {
+                onRefresh: chart => {
+                    chart.data.datasets[0].data.push({
+                        x: Date.now(),
+                        y: population.POP.reduce((acc, curr) => acc + curr.dna.genes[1], 0)/population.POP.length
+                    });
+                }
+            }
+        },
+        y: {
+          suggestedMin: 0,
+          suggestedMax: 1
+        }
+      }
+    }
+  });
+  ctx = document.getElementById("angularSpeedChart").getContext('2d');
+  angleSpeedChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      datasets: [
+        {
+          data: [{x:0, y:0}],
+          label: 'Average Angular Speed Gene',
+          fill: false,
+          borderColor: '#0000ff',
+          cubicInterpolationMode: 'monotone',
+        },
+      ]
+    },
+    options: {
+      responsive: true,
+      scales: {
+        x: {
+            type: 'realtime',
+            realtime: {
+                onRefresh: chart => {
+                    chart.data.datasets[0].data.push({
+                        x: Date.now(),
+                        y: population.POP.reduce((acc, curr) => acc + curr.dna.genes[2], 0)/population.POP.length
+                    });
+                }
+            }
+        },
+        y: {
+          suggestedMin: 0,
+          suggestedMax: 1
+        }
+      }
+    }
+  });
 }
 function draw() {
   background(51);
+  if (population.POP.length == 0){
+    population = new Population(initialPop);
+  }
   population.run();
   frameRate((int)(slider.value));
-  //text(population.bestspecies(),10,10);
 }
 function mousePressed(){
   if(mouseX<width && mouseX>0 && mouseY<height && mouseY>0){
@@ -49,14 +189,14 @@ class Population {
       }
     }
   }
-  eat(pop) { // Perhaps make it so that people who eat more get a higher reproduction chance to further support fitness
+  eat(pop) {
     var toRemove = [];
     for (var i = pop.length-1; i >= 0; i--) {
       for (var j = pop.length-1; j >= 0; j--) {
         if (j != i){
           var d = p5.Vector.dist(pop[i].position, pop[j].position);
-          if (d < pop[i].size/2 && pop[i].size>pop[j].size/*(1.2)*/) { // Maybe times 1.2?
-            pop[i].hp += Math.floor(pop[j].hp*0.75);; // Perhaps unbalanced?
+          if (d < pop[i].size/2 && pop[i].size>pop[j].size*compareCoef) {
+            pop[i].hp += Math.floor(pop[j].hp*eatCoef);
             toRemove.push(pop[j]);
           }
         }
@@ -65,21 +205,8 @@ class Population {
     pop = pop.filter((x) => !toRemove.includes(x));
     return pop;
   }
-  // bestspecies(){
-  //   var unique = set(this.POP);
-  //   var uniqueCount = [0]*unique.length;
-  //   for(var i = 0; i<unique.length; i++){
-  //     for(var j = 0; j<this.POP.length; j++){
-  //       if (this.POP[i] = unique[i]){
-  //         uniqueCount[i]+=1
-  //       }
-  //     }
-  //   }
-  //   var species = ((Math.trunc(unique[uniqueCount.indexOf(max(uniqueCount))].dna.genes[0]))*10).toString()+((Math.trunc(unique[uniqueCount.indexOf(max(uniqueCount))].dna.genes[1]))*10).toString();
-  //   return "S"+species;
-  // }
 }
-class Individual{
+class Individual {
   constructor(Vect,DnA){
     this.position = Vect;
     if(DnA != null){
@@ -87,18 +214,21 @@ class Individual{
     } else {
       this.dna = new DNA();
     }
-    this.size = Math.floor(this.dna.genes[0]*100);
-    this.speed = Math.floor(50/this.dna.genes[0] * this.dna.genes[1]*2);
-    this.hp = Math.floor(this.dna.genes[0]*200);
+    this.size = Math.floor(this.dna.genes[0]*sizeCoef);
+    this.speed = Math.floor(this.dna.genes[1]*speedCoef);
+    this.angleSpeed = Math.floor(this.dna.genes[2]*TWO_PI);
+    this.hp = Math.floor(this.dna.genes[0]*hpCoef);
+    this.angle = random(TWO_PI);
   }
-  update(){
+  update(dt){
+    this.angle += random(-this.angleSpeed*dt, this.angleSpeed*dt);
+    this.position.x += cos(this.angle) * this.speed * dt;
+    this.position.y += sin(this.angle) * this.speed * dt;
     if (this.position.x < -this.size) this.position.x = width+this.size;
     if (this.position.y < -this.size) this.position.y = height +this.size;
     if (this.position.x > width+this.size) this.position.x = -this.size;
     if (this.position.y > height+this.size) this.position.y = -this.size;
-    this.position.x += random(-this.speed,this.speed);
-    this.position.y += random(-this.speed,this.speed);
-    this.hp-=this.dna.genes[1];
+    this.hp-=  this.dna.genes[0] * costCoef * dt;
   }
   show(){
     ellipseMode(CENTER);
@@ -117,7 +247,7 @@ class Individual{
     } 
   }
   Run(){
-    this.update();
+    this.update(((int)(speedSlider.value))/((int)(slider.value)));
     this.show();
   }
   dead() {
@@ -135,15 +265,16 @@ class DNA{
       this.genes = newgenes;
     } else {
       this.genes = [
-        random(minGene,maxGene), //SIZE
-        random(minGene,maxGene), //METABOLISM
+        random(), //SIZE
+        random(), //SPEED
+        random(PI/2), //ANGLESPEED
       ];
     }
   }
   mutate() {
     for (var i = 0; i < this.genes.length; i++) {
       if (random() < mutationRate) {
-        this.genes[i] = random(minGene,maxGene);
+        this.genes[i] = random();
       }
     }
   }
