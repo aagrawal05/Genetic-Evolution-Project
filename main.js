@@ -204,15 +204,15 @@ function setup() {
                 onRefresh: chart => {
                     chart.data.datasets[0].data.push({
                         x: Date.now(),
-                        y: population.POP.reduce((acc, curr) => acc + curr.dna.genes[2], 0)/population.POP.length
+                        y: population.POP.reduce((acc, curr) => acc + curr.dna.genes[2], 0)/population.POP.length/(PI/2)
                     });
                     chart.data.datasets[1].data.push({
                         x: Date.now(),
-                        y: population.POP.reduce((prev, curr) => {return prev.dna.genes[2] < curr.dna.genes[2] ? prev : curr}).dna.genes[2]
+                        y: population.POP.reduce((prev, curr) => {return prev.dna.genes[2] < curr.dna.genes[2] ? prev : curr}).dna.genes[2]/(PI/2)
                     })
                     chart.data.datasets[2].data.push({
                         x: Date.now(),
-                        y: population.POP.reduce((prev, curr) => {return prev.dna.genes[2] > curr.dna.genes[2] ? prev : curr}).dna.genes[2]
+                        y: population.POP.reduce((prev, curr) => {return prev.dna.genes[2] > curr.dna.genes[2] ? prev : curr}).dna.genes[2]/(PI/2)
                     })
                 }
             }

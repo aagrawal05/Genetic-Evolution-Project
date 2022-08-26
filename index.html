@@ -76,7 +76,7 @@
       </div>
       <div class="slidecontainer">
         <p id="info">SPEED: <span id="speed"></span>x</p>
-        <input type="range" min="1" max="10" step="0.1" value="1" class="slider" id="simSlider">
+        <input type="range" min="1" max="10" step="0.1" value="1.0" class="slider" id="simSlider">
       </div>
 
       <script id = "fpsSlider">
@@ -90,9 +90,9 @@
       <script id = "simulationSpeed">
         var speedSlider = document.getElementById("simSlider");
         var speedOutput = document.getElementById("speed");
-        speedOutput.innerHTML = speedSlider.value;
+        speedOutput.innerHTML = (Math.round(speedSlider.value * 10) / 10).toFixed(1);
         speedSlider.oninput = function() {
-          speedOutput.innerHTML = this.value;
+          speedOutput.innerHTML = (Math.round(this.value * 10) / 10).toFixed(1);
         }
       </script>
     </div>
