@@ -1,11 +1,14 @@
+//TO-DO --> UI for changing dummy variables
+//TO-DO --> Graph shows highest/lowest size, speed, and angular speed to show range
+// ^ https://stackoverflow.com/questions/37866992/filling-area-between-two-lines-chart-js-v2
 var population, populationChart, sizeChart, speedChart, angleSpeedChart;
 var date = new Date();
 const width=800, height=800;
 var slider = document.getElementById("fpsSlider");
 var speedSlider = document.getElementById("simulationSpeed");
 const mutationRate = 0.1, reproductionRate = 0.0005, initialPop = 100;
-const sizeCoef=50, speedCoef=500, hpCoef=100, eatCoef=0.5, compareCoef=1.2, costCoef=2.5;
-
+const sizeCoef=50, speedCoef=500, hpCoef=100, eatCoef=0.5, compareCoef=1.2, costCoef=5;
+const minSize = 0.1, minSpeed = 0.1, minAngleSpeed = 0.0;
 function setup() {
   var simulationCanvas = createCanvas(width,height);
   simulationCanvas.parent("simulation");
@@ -53,9 +56,24 @@ function setup() {
     data: {
       datasets: [
         {
-          data: [{x:0, y:0}],
+          data: [],
           label: 'Average Size Gene',
           fill: false,
+          borderColor: '#ff0000',
+          cubicInterpolationMode: 'monotone',
+        },
+        {
+          data: [],
+          label: 'Min Size Gene',
+          fill: false,
+          borderColor: '#ff0000',
+          cubicInterpolationMode: 'monotone',
+        },
+        {
+          data: [],
+          label: 'Max Size Gene',
+          fill: '-1',
+          backgroundColor: '#ff6863',
           borderColor: '#ff0000',
           cubicInterpolationMode: 'monotone',
         },
@@ -71,7 +89,15 @@ function setup() {
                     chart.data.datasets[0].data.push({
                         x: Date.now(),
                         y: population.POP.reduce((acc, curr) => acc + curr.dna.genes[0], 0)/population.POP.length
-                    });
+                    })
+                    chart.data.datasets[1].data.push({
+                        x: Date.now(),
+                        y: population.POP.reduce((prev, curr) => {return prev.dna.genes[0] < curr.dna.genes[0] ? prev : curr}).dna.genes[0]
+                    })
+                    chart.data.datasets[2].data.push({
+                        x: Date.now(),
+                        y: population.POP.reduce((prev, curr) => {return prev.dna.genes[0] > curr.dna.genes[0] ? prev : curr}).dna.genes[0]
+                    })
                 }
             }
         },
@@ -88,9 +114,24 @@ function setup() {
     data: {
       datasets: [
         {
-          data: [{x:0, y:0}],
+          data: [],
           label: 'Average Speed Gene',
           fill: false,
+          borderColor: '#00ff00',
+          cubicInterpolationMode: 'monotone',
+        },
+        {
+          data: [],
+          label: 'Min Size Gene',
+          fill: false,
+          borderColor: '#00ff00',
+          cubicInterpolationMode: 'monotone',
+        },
+        {
+          data: [],
+          label: 'Max Size Gene',
+          fill: '-1',
+          backgroundColor: '#90ee90',
           borderColor: '#00ff00',
           cubicInterpolationMode: 'monotone',
         },
@@ -107,6 +148,14 @@ function setup() {
                         x: Date.now(),
                         y: population.POP.reduce((acc, curr) => acc + curr.dna.genes[1], 0)/population.POP.length
                     });
+                    chart.data.datasets[1].data.push({
+                        x: Date.now(),
+                        y: population.POP.reduce((prev, curr) => {return prev.dna.genes[1] < curr.dna.genes[1] ? prev : curr}).dna.genes[1]
+                    })
+                    chart.data.datasets[2].data.push({
+                        x: Date.now(),
+                        y: population.POP.reduce((prev, curr) => {return prev.dna.genes[1] > curr.dna.genes[1] ? prev : curr}).dna.genes[1]
+                    })
                 }
             }
         },
@@ -123,9 +172,24 @@ function setup() {
     data: {
       datasets: [
         {
-          data: [{x:0, y:0}],
+          data: [],
           label: 'Average Angular Speed Gene',
           fill: false,
+          borderColor: '#0000ff',
+          cubicInterpolationMode: 'monotone',
+        },
+        {
+          data: [],
+          label: 'Min Size Gene',
+          fill: false,
+          borderColor: '#0000ff',
+          cubicInterpolationMode: 'monotone',
+        },
+        {
+          data: [],
+          label: 'Max Size Gene',
+          fill: '-1',
+          backgroundColor: '#add8e6',
           borderColor: '#0000ff',
           cubicInterpolationMode: 'monotone',
         },
@@ -142,6 +206,14 @@ function setup() {
                         x: Date.now(),
                         y: population.POP.reduce((acc, curr) => acc + curr.dna.genes[2], 0)/population.POP.length
                     });
+                    chart.data.datasets[1].data.push({
+                        x: Date.now(),
+                        y: population.POP.reduce((prev, curr) => {return prev.dna.genes[2] < curr.dna.genes[2] ? prev : curr}).dna.genes[2]
+                    })
+                    chart.data.datasets[2].data.push({
+                        x: Date.now(),
+                        y: population.POP.reduce((prev, curr) => {return prev.dna.genes[2] > curr.dna.genes[2] ? prev : curr}).dna.genes[2]
+                    })
                 }
             }
         },
@@ -217,7 +289,7 @@ class Individual {
     }
     this.size = Math.floor(this.dna.genes[0]*sizeCoef);
     this.speed = Math.floor(this.dna.genes[1]*speedCoef);
-    this.angleSpeed = Math.floor(this.dna.genes[2]*TWO_PI);
+    this.angleSpeed = this.dna.genes[2]*TWO_PI;
     this.hp = Math.floor(this.dna.genes[0]*hpCoef);
     this.angle = random(TWO_PI);
   }
@@ -266,9 +338,9 @@ class DNA{
       this.genes = newgenes;
     } else {
       this.genes = [
-        random(), //SIZE
-        random(), //SPEED
-        random(PI/2), //ANGLESPEED
+        random(minSize, 1), //SIZE
+        random(minSpeed, 1), //SPEED
+        random(minAngleSpeed, PI/2), //ANGLESPEED
       ];
     }
   }
