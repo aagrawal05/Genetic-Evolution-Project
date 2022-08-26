@@ -122,14 +122,14 @@ function setup() {
         },
         {
           data: [],
-          label: 'Min Size Gene',
+          label: 'Min Speed Gene',
           fill: false,
           borderColor: '#00ff00',
           cubicInterpolationMode: 'monotone',
         },
         {
           data: [],
-          label: 'Max Size Gene',
+          label: 'Max Speed Gene',
           fill: '-1',
           backgroundColor: '#90ee90',
           borderColor: '#00ff00',
@@ -180,14 +180,14 @@ function setup() {
         },
         {
           data: [],
-          label: 'Min Size Gene',
+          label: 'Min Angular Speed Gene',
           fill: false,
           borderColor: '#0000ff',
           cubicInterpolationMode: 'monotone',
         },
         {
           data: [],
-          label: 'Max Size Gene',
+          label: 'Max Angular Speed Gene',
           fill: '-1',
           backgroundColor: '#add8e6',
           borderColor: '#0000ff',
