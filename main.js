@@ -6,8 +6,8 @@ var date = new Date();
 const width=800, height=800;
 var slider = document.getElementById("fpsSlider");
 var speedSlider = document.getElementById("simulationSpeed");
-const mutationRate = 0.1, reproductionRate = 0.0005, initialPop = 100;
-const sizeCoef=50, speedCoef=500, hpCoef=100, eatCoef=0.5, compareCoef=1.2, costCoef=5;
+const mutationRate = 0.01, reproductionRate = 0.0005, initialPop = 100;
+const sizeCoef=50, speedCoef=500, hpCoef=100, eatCoef=0.5, compareCoef=1.5, costCoef=3;
 const minSize = 0.1, minSpeed = 0.1, minAngleSpeed = 0.0;
 function setup() {
   var simulationCanvas = createCanvas(width,height);
@@ -310,7 +310,7 @@ class Individual {
     ellipse(this.position.x, this.position.y, this.size, this.size);
   }
   reproduce() {
-    if (random(1) < reproductionRate) {
+    if (random() < reproductionRate) {
       var childDNA = this.dna;
       childDNA.mutate();
       return new Individual(createVector(random(width),random(height)), childDNA);
@@ -340,14 +340,24 @@ class DNA{
       this.genes = [
         random(minSize, 1), //SIZE
         random(minSpeed, 1), //SPEED
-        random(minAngleSpeed, PI/2), //ANGLESPEED
+        random(minAngleSpeed, 1), //ANGLESPEED
       ];
     }
   }
   mutate() {
     for (var i = 0; i < this.genes.length; i++) {
       if (random() < mutationRate) {
-        this.genes[i] = random();
+        switch (i){
+          case 0:
+            this.genes[i] = random(minSize, 1);
+            break;
+          case 1:
+            this.genes[i] = random(minSpeed, 1);
+            break;
+          case 2:
+            this.genes[i] = random(minAngleSpeed, 1);
+            break;
+        }
       }
     }
   }
