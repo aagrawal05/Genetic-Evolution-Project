@@ -21,7 +21,7 @@ function setup() {
     data: {
       datasets: [
         {
-          data: [{x:0, y:initialPop}],
+          data: [{x:Date.now(), y:initialPop}],
           label: 'Population',
           fill: false,
           borderColor: '#000000',
