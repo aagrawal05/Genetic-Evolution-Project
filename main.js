@@ -306,7 +306,7 @@ class Individual {
   show(){
     ellipseMode(CENTER);
     stroke(0,this.hp);
-    fill(0, this.hp);
+    fill(this.dna.genes[0]*255, this.dna.genes[1]*255, this.dna.genes[2]*255, this.hp);
     ellipse(this.position.x, this.position.y, this.size, this.size);
   }
   reproduce() {
