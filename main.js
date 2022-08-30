@@ -6,8 +6,8 @@ var date = new Date();
 const width=800, height=800;
 var slider = document.getElementById("fpsSlider");
 var speedSlider = document.getElementById("simulationSpeed");
-const mutationRate = 0.01, reproductionRate = 0.0005, initialPop = 100;
-const sizeCoef=50, speedCoef=500, hpCoef=100, eatCoef=0.5, compareCoef=1.5, costCoef=3;
+const mutationRate = 0.05, reproductionRate = 0.1, reproductionRange=0.05, initialPop = 100;
+const sizeCoef=50, speedCoef=500, hpCoef=100, eatCoef=0.5, compareCoef=1.3, costCoef=3;
 const minSize = 0.1, minSpeed = 0.1, minAngleSpeed = 0.0;
 function setup() {
   var simulationCanvas = createCanvas(width,height);
@@ -231,7 +231,7 @@ function draw() {
   if (population.POP.length == 0){
     population = new Population(initialPop);
   }
-  population.run();
+  population.run(((int)(speedSlider.value))/((int)(slider.value)));
   frameRate((int)(slider.value));
 }
 function mousePressed(){
@@ -251,11 +251,11 @@ class Population {
         this.POP.push(new Individual(createVector(random(width),random(height))));
       }
   }
-  run(){
+  run(dt){
     this.POP = this.eat(this.POP);
     for (var i = this.POP.length-1; i >= 0; i--) {
       this.POP[i].Run();
-      var child = this.POP[i].reproduce();
+      var child = this.POP[i].reproduce(dt);
       if (child != null) this.POP.push(child);
       if (this.POP[i].dead()) {
         this.POP.splice(i,1);
@@ -309,8 +309,8 @@ class Individual {
     fill(this.dna.genes[0]*255, this.dna.genes[1]*255, this.dna.genes[2]*255, this.hp);
     ellipse(this.position.x, this.position.y, this.size, this.size);
   }
-  reproduce() {
-    if (random() < reproductionRate) {
+  reproduce(dt) {
+    if (random() < (reproductionRate-(this.dna.genes[0]-0.5)*reproductionRange) * dt) {
       var childDNA = this.dna;
       childDNA.mutate();
       return new Individual(createVector(random(width),random(height)), childDNA);
