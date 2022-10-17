@@ -227,7 +227,7 @@ function setup() {
   document.body.style.zoom = "90%" 
 }
 function draw() {
-  background(0)
+  background(51)
   if (population.POP.length == 0){
     population = new Population(initialPop);
   }
