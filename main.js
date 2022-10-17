@@ -311,7 +311,7 @@ class Individual {
   }
   reproduce(dt) {
     if (random() < reproductionRate * dt) {
-      var childDNA = new DNA(this.dna.genes);
+      var childDNA = new DNA(JSON.parse(JSON.stringify(this.dna.genes)))
       childDNA.mutate();
       return new Individual(createVector(random(width),random(height)), childDNA);
     } 
