@@ -1,108 +1,23 @@
-<!DOCTYPE html>
 <html>
   <head>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.8.0/p5.js"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/luxon/3.0.1/luxon.min.js"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-adapter-luxon/1.0.0-beta.1/chartjs-adapter-luxon.min.js"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-streaming/2.0.0/chartjs-plugin-streaming.min.js"></script>
-      <script src="main.js"></script>
-      <meta name="viewport" content="width=device-width, initial-scale=1">
-      <style>
-        body {
-          width: 100%;
-          display: flex;
-          justify-content: flex-start;
-        }
-        #geneCharts{
-          width: 32.5%;
-          display: flex;
-          flex-direction: row;
-          justify-content: space-between;
-        }
-        #chart{
-          width: 50%;
-        }
-        p {
-          font-size: 25px;
-          margin-right: 10px;
-        }
+    <title>Agar.io NN</title>
 
-        .slidecontainer {
-          width: 800px;
-          display: flex;
-          justify-content: flex-start;
-          align-items: center;
-          height: 50px;
-        }
+    <script src="https://cdn.rawgit.com/wagenaartje/neataptic/a7610e38/dist/neataptic.js"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
 
-        .slider {
-          -webkit-appearance: none;
-          width: 80%;
-          height: 20px;
-          background: #d3d3d3;
-          outline: none;
-          opacity: 0.7;
-          -webkit-transition: .2s;
-          transition: opacity .2s;
-        }
 
-        .slider:hover {
-          opacity: 1;
-        }
-
-        .slider::-webkit-slider-thumb {
-          -webkit-appearance: none;
-          appearance: none;
-          width: 20px;
-          height: 20px;
-          background: #4CAF50;
-          cursor: pointer;
-        }
-
-        .slider::-moz-range-thumb {
-          width: 15px;
-          height: 15px;
-          background: #4CAF50;
-          cursor: pointer;
-        }
-      </style>
-      </head>
+  </head>
   <body>
-    <div id="simulation">
-      <div class="slidecontainer">
-        <p id="info">FPS: <span id="fps"></span></p>
-        <input type="range" min="1" max="240" value="60" class="slider" id="Slider">
-      </div>
-      <div class="slidecontainer">
-        <p id="info">SPEED: <span id="speed"></span>x</p>
-        <input type="range" min="1" max="10" step="0.1" value="1.0" class="slider" id="simSlider">
-      </div>
+    <h3>The following neural agents are a result of 1000+ generations of evolution</h3>
+    <p>If you have any remarks, or have managed to improve the evolution process, please make a post <a href="https://github.com/wagenaartje/neataptic/">here</a>. You can also perform a pull request on this repo.</p>
+    <div id="field" width="100%">
+    </div>
+    <script src="libs/p5.js"></script>
 
-      <script id = "fpsSlider">
-        var slider = document.getElementById("Slider");
-        var output = document.getElementById("fps");
-        output.innerHTML = slider.value;
-        slider.oninput = function() {
-          output.innerHTML = this.value;
-        }
-      </script>
-      <script id = "simulationSpeed">
-        var speedSlider = document.getElementById("simSlider");
-        var speedOutput = document.getElementById("speed");
-        speedOutput.innerHTML = (Math.round(speedSlider.value * 10) / 10).toFixed(1);
-        speedSlider.oninput = function() {
-          speedOutput.innerHTML = (Math.round(this.value * 10) / 10).toFixed(1);
-        }
-      </script>
-    </div>
-    <div id="chart">
-      <canvas id="populationChart" width="800" height="500"></canvas>
-      <div id="geneCharts">
-        <canvas id="sizeChart" class="geneChart" width="260" height="400"></canvas>
-        <canvas id="speedChart" class="geneChart" width="260" height="400"></canvas>
-        <canvas id="angularSpeedChart" class="geneChart" width="260" height="400"></canvas>
-      </div>
-    </div>
+    <script src="js/main.js"></script>
+    <script src="js/population.js"></script>
+    <script src="js/player.js"></script>
+    <script src="js/food.js"></script>
+    <script src="js/field.js"></script>
   </body>
 </html>
