@@ -251,7 +251,6 @@ function setup() {
       }
     }
   });
-  document.body.style.zoom = "90%" 
 }
 function restart() {
   population = new Population(initialPop);

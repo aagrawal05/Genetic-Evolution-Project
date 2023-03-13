@@ -13,23 +13,39 @@
           width: 100%;
           display: flex;
           justify-content: flex-start;
+					flex-direction: column;
         }
         #geneCharts{
-          width: 32.5%;
-          display: flex;
-          flex-direction: row;
-          justify-content: space-between;
+				  width: 33.33vw;
+				  display: flex;
         }
         #chart{
-          width: 50%;
+				  width: 100vw;
+				  display:flex;
+				  flex-direction: column;
         }
         p {
+				  width: 45vw;
           font-size: 25px;
           margin-right: 10px;
         }
-
+				#simulation {
+				  display: flex;
+					flex-direction: column;
+					justify-content: center;
+					align-content: center;
+				}
+				button {
+				   align-self: center;
+					 margin-top: 15px;
+					 margin-bottom: 15px;
+				   width: 10vw;
+				}
+				canvas {
+								align-self: center;
+				}
         .slidecontainer {
-          width: 800px;
+				  width: 99vw;
           display: flex;
           justify-content: flex-start;
           align-items: center;
@@ -38,7 +54,7 @@
 
         .slider {
           -webkit-appearance: none;
-          width: 80%;
+          width: 99vw;
           height: 20px;
           background: #d3d3d3;
           outline: none;
