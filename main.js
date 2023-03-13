@@ -6,9 +6,36 @@ var date = new Date();
 const width=800, height=800;
 var slider = document.getElementById("fpsSlider");
 var speedSlider = document.getElementById("simulationSpeed");
-const mutationRate = 0.05, reproductionRate = 0.1, initialPop = 100;
-const sizeCoef=50, speedCoef=500, hpCoef=100, eatCoef=0.5, compareCoef=1.3, costCoef=10;
+var sizeSlider = document.getElementById("sizeCoef");
+var mutationSlider = document.getElementById("mutationCoef");
+var reproductionSlider = document.getElementById("reproductionCoef");
+var hpSlider = document.getElementById("hpCoef");
+var eatSlider = document.getElementById("eatCoef");
+var compareSlider = document.getElementById("compareCoef");
+var costSlider = document.getElementById("costCoef");
+var initialSlider = document.getElementById("initialCoef");
+
+
+let mutationRate = 0.1, reproductionRate = 0.2, initialPop = 50;
+let sizeCoef=50, speedCoef=500, hpCoef=100, eatCoef=1, compareCoef=1.25, costCoef=18.5;
 const minSize = 0.1, minSpeed = 0.1, minAngleSpeed = 0.0;
+
+//Brief description of the above hyperparameters:
+/*
+mutationRate: The chance that a gene will mutate
+reproductionRate: The chance that a gene will be passed on to the next generation
+initialPop: The initial population size
+sizeCoef: The coefficient for the size of the individual
+speedCoef: The coefficient for the speed of the individual
+hpCoef: The coefficient for the health of the individual
+eatCoef: The coefficient for the amount of food the individual eats
+compareCoef: The coefficient for the proportion of the individual's size to the food's size to be able to eat it
+costCoef: The coefficient for the cost of the individual proportional to its size
+minSize: The minimum size of the individual
+minSpeed: The minimum speed of the individual
+minAngleSpeed: The minimum angular speed of the individual
+*/
+
 function setup() {
   var simulationCanvas = createCanvas(width,height);
   simulationCanvas.parent("simulation");
@@ -224,15 +251,25 @@ function setup() {
       }
     }
   });
-  document.body.style.zoom = "90%" 
+}
+function restart() {
+  population = new Population(initialPop);
 }
 function draw() {
   background(51)
   if (population.POP.length == 0){
-    population = new Population(initialPop);
+    restart()
   }
   population.run(((int)(speedSlider.value))/((int)(slider.value)));
   frameRate((int)(slider.value));
+  sizeCoef = ((int)(sizeSlider.value));
+  mutationRate = ((int)(mutationSlider.value));
+  reproductionRate = ((int)(reproductionSlider.value));
+  hpCoef = ((int)(hpSlider.value));
+  eatCoef = ((int)(eatSlider.value));
+  compareCoef = ((int)(compareSlider.value));
+  costCoef = ((int)(costSlider.value));
+  initialPop = ((int)(initialSlider.value));
 }
 function mousePressed(){
   if(mouseX<width && mouseX>0 && mouseY<height && mouseY>0){
@@ -362,3 +399,4 @@ class DNA{
     }
   }
 }
+
