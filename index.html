@@ -1,239 +1,370 @@
 <!DOCTYPE html>
 <html>
-  <head>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.8.0/p5.js"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/luxon/3.0.1/luxon.min.js"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-adapter-luxon/1.0.0-beta.1/chartjs-adapter-luxon.min.js"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-streaming/2.0.0/chartjs-plugin-streaming.min.js"></script>
-      <script src="main.js"></script>
-      <meta name="viewport" content="width=device-width, initial-scale=1">
-      <style>
-        body {
-          width: 100%;
-          display: flex;
-          justify-content: flex-start;
-					flex-direction: column;
-					overflow-x: hidden;
-        }
-        #geneCharts{
-				  width: 33.33vw;
-				  display: flex;
-        }
-        #chart{
-				  width: 100vw;
-				  display:flex;
-				  flex-direction: column;
-        }
-        p {
-				  width: 45vw;
-          font-size: 25px;
-          margin-right: 10px;
-        }
-				#simulation {
-				  display: flex;
-					flex-direction: column;
-					justify-content: center;
-					align-content: center;
-				}
-				button {
-				   align-self: center;
-					 margin-top: 15px;
-					 margin-bottom: 15px;
-				   width: 10vw;
-				}
-				canvas {
-								align-self: center;
-				}
-        .slidecontainer {
-				  width: 99vw;
-          display: flex;
-          justify-content: flex-start;
-          align-items: center;
-          height: 50px;
-        }
+    <head>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.8.0/p5.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/luxon/3.0.1/luxon.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-adapter-luxon/1.0.0-beta.1/chartjs-adapter-luxon.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-streaming/2.0.0/chartjs-plugin-streaming.min.js"></script>
+        <script src="main.js"></script>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <style>
+            body {
+								zoom: 90%;
+                width: 100%;
+                display: flex;
+                justify-content: flex-start;
+                flex-direction: column;
+                overflow-x: hidden;
+            }
+            #geneCharts {
+                width: 33.33%;
+                display: flex;
+            }
+            #chart {
+                width: 100%;
+                display: flex;
+                flex-direction: column;
+            }
+            p {
+                width: 45vw;
+                font-size: 25px;
+                margin-right: 10px;
+            }
+            #simulation {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-content: center;
+            }
+						#parentParent {
+										display: flex;
+										flex-direction: row;
+						}
+            button {
+                align-self: center;
+                margin-top: 15px;
+                margin-bottom: 15px;
+                width: 10vw;
+            }
+            .slidecontainer {
+                width: 99vw;
+                display: flex;
+                justify-content: flex-start;
+                align-items: center;
+                height: 50px;
+            }
 
-        .slider {
-          -webkit-appearance: none;
-          width: 99vw;
-          height: 20px;
-          background: #d3d3d3;
-          outline: none;
-          opacity: 0.7;
-          -webkit-transition: .2s;
-          transition: opacity .2s;
-        }
+            .slider {
+                -webkit-appearance: none;
+                width: 99vw;
+                height: 20px;
+                background: #d3d3d3;
+                outline: none;
+                opacity: 0.7;
+                -webkit-transition: 0.2s;
+                transition: opacity 0.2s;
+            }
 
-        .slider:hover {
-          opacity: 1;
-        }
+            .slider:hover {
+                opacity: 1;
+            }
 
-        .slider::-webkit-slider-thumb {
-          -webkit-appearance: none;
-          appearance: none;
-          width: 20px;
-          height: 20px;
-          background: #4CAF50;
-          cursor: pointer;
-        }
+            .slider::-webkit-slider-thumb {
+                -webkit-appearance: none;
+                appearance: none;
+                width: 20px;
+                height: 20px;
+                background: #4caf50;
+                cursor: pointer;
+            }
 
-        .slider::-moz-range-thumb {
-          width: 15px;
-          height: 15px;
-          background: #4CAF50;
-          cursor: pointer;
-        }
+            .slider::-moz-range-thumb {
+                width: 15px;
+                height: 15px;
+                background: #4caf50;
+                cursor: pointer;
+            }
 
-				.break {
-								flex-basis: 100%;
-								height: 0%;
-				}
+            .break {
+                flex-basis: 100%;
+                height: 0%;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="simulation">
+            <div class="slidecontainer">
+                <p id="info">FPS: <span id="fps"></span></p>
+                <input
+                    type="range"
+                    min="1"
+                    max="240"
+                    value="60"
+                    class="slider"
+                    id="Slider"
+                />
+            </div>
 
-      </style>
-      </head>
-  <body>
-    <div id="simulation">
-      <div class="slidecontainer">
-        <p id="info">FPS: <span id="fps"></span></p>
-        <input type="range" min="1" max="240" value="60" class="slider" id="Slider">
-      </div>
+            <div class="slidecontainer">
+                <p id="info">SPEED: <span id="speed"></span>x</p>
+                <input
+                    type="range"
+                    min="1"
+                    max="10"
+                    step="0.1"
+                    value="1.0"
+                    class="slider"
+                    id="simSlider"
+                />
+            </div>
+            <button onclick="restart()">Restart</button>
+            <script id="fpsSlider">
+                var slider = document.getElementById("Slider");
+                var output = document.getElementById("fps");
+                output.innerHTML = slider.value;
+                slider.oninput = function () {
+                    output.innerHTML = this.value;
+                };
+            </script>
+            <script id="simulationSpeed">
+                var speedSlider = document.getElementById("simSlider");
+                var speedOutput = document.getElementById("speed");
+                speedOutput.innerHTML = (
+                    Math.round(speedSlider.value * 10) / 10
+                ).toFixed(1);
+                speedSlider.oninput = function () {
+                    speedOutput.innerHTML = (
+                        Math.round(this.value * 10) / 10
+                    ).toFixed(1);
+                };
+            </script>
+						<div id="parentParent">
+						    <div id="canvasParent">
+						    </div>
+								<div id="chart">
+										<canvas id="populationChart" width="800" height="500"></canvas>
+										<div id="geneCharts">
+												<canvas
+														id="sizeChart"
+														class="geneChart"
+														width="260"
+														height="400"
+												></canvas>
+												<canvas
+														id="speedChart"
+														class="geneChart"
+														width="260"
+														height="400"
+												></canvas>
+												<canvas
+														id="angularSpeedChart"
+														class="geneChart"
+														width="260"
+														height="400"
+												></canvas>
+										</div>
+								</div>
+				     </div>
+        </div>
+        <div id="statSliders">
+            <div class="slidecontainer">
+                <p id="info">SIZE COEFFICIENT: <span id="sizeSpan"></span></p>
+                <input
+                    type="range"
+                    min="25"
+                    max="75"
+                    step="0.05"
+                    value="50"
+                    class="slider"
+                    id="size"
+                />
+            </div>
 
-      <div class="slidecontainer">
-        <p id="info">SPEED: <span id="speed"></span>x</p>
-        <input type="range" min="1" max="10" step="0.1" value="1.0" class="slider" id="simSlider">
-      </div>
-      <button onclick="restart()">Restart</button>
-      <script id = "fpsSlider">
-        var slider = document.getElementById("Slider");
-        var output = document.getElementById("fps");
-        output.innerHTML = slider.value;
-        slider.oninput = function() {
-          output.innerHTML = this.value;
-        }
-      </script>
-      <script id = "simulationSpeed">
-        var speedSlider = document.getElementById("simSlider");
-        var speedOutput = document.getElementById("speed");
-        speedOutput.innerHTML = (Math.round(speedSlider.value * 10) / 10).toFixed(1);
-        speedSlider.oninput = function() {
-          speedOutput.innerHTML = (Math.round(this.value * 10) / 10).toFixed(1);
-        }
-      </script>
-    </div>
-    <div id="chart">
-      <canvas id="populationChart" width="800" height="500"></canvas>
-      <div id="geneCharts">
-        <canvas id="sizeChart" class="geneChart" width="260" height="400"></canvas>
-        <canvas id="speedChart" class="geneChart" width="260" height="400"></canvas>
-        <canvas id="angularSpeedChart" class="geneChart" width="260" height="400"></canvas>
-      </div>
+            <div class="slidecontainer">
+                <p id="info">
+                    MUTATION COEFFICIENT: <span id="mutationSpan"></span>
+                </p>
+                <input
+                    type="range"
+                    min="0"
+                    max="0.5"
+                    step="0.01"
+                    value="0.1"
+                    class="slider"
+                    id="mutation"
+                />
+            </div>
 
-    </div>
-		<div id="statSliders">
-	      <div class="slidecontainer">
-        <p id="info">SIZE COEFFICIENT: <span id="sizeSpan"></span></p>
-        <input type="range" min="25" max="75" step="0.05" value="50" class="slider" id="size">
-      </div>
+            <div class="slidecontainer">
+                <p id="info">
+                    REPRODUCTION COEFFICIENT:
+                    <span id="reproductionSpan"></span>
+                </p>
+                <input
+                    type="range"
+                    min="0"
+                    max="0.5"
+                    step="0.01"
+                    value="0.2"
+                    class="slider"
+                    id="reproduction"
+                />
+            </div>
 
-      <div class="slidecontainer">
-        <p id="info">MUTATION COEFFICIENT: <span id="mutationSpan"></span></p>
-        <input type="range" min="0" max="0.5" step="0.01" value="0.1" class="slider" id="mutation">
-      </div>
+            <div class="slidecontainer">
+                <p id="info">HP COEFFICIENT: <span id="hpSpan"></span></p>
+                <input
+                    type="range"
+                    min="75"
+                    max="150"
+                    step="0.05"
+                    value="100"
+                    class="slider"
+                    id="hp"
+                />
+            </div>
 
-      <div class="slidecontainer">
-        <p id="info">REPRODUCTION COEFFICIENT: <span id="reproductionSpan"></span></p>
-        <input type="range" min="0" max="0.5" step="0.01" value="0.2" class="slider" id="reproduction">
-      </div>
+            <div class="slidecontainer">
+                <p id="info">EAT COEFFICIENT: <span id="eatSpan"></span></p>
+                <input
+                    type="range"
+                    min="1"
+                    max="2"
+                    step="0.05"
+                    value="1"
+                    class="slider"
+                    id="eat"
+                />
+            </div>
 
-      <div class="slidecontainer">
-        <p id="info">HP COEFFICIENT: <span id="hpSpan"></span></p>
-        <input type="range" min="75" max="150" step="0.05" value="100" class="slider" id="hp">
-      </div>
+            <div class="slidecontainer">
+                <p id="info">
+                    COMPARE COEFFICIENT: <span id="compareSpan"></span>
+                </p>
+                <input
+                    type="range"
+                    min="1"
+                    max="2"
+                    step="0.05"
+                    value="1.25"
+                    class="slider"
+                    id="compare"
+                />
+            </div>
+            <div class="slidecontainer">
+                <p id="info">COST COEFFICIENT: <span id="costSpan"></span></p>
+                <input
+                    type="range"
+                    min="10"
+                    max="25"
+                    step="0.05"
+                    value="18.5"
+                    class="slider"
+                    id="cost"
+                />
+            </div>
+				    <div class="slidecontainer">
+                <p id="info">
+                    SPEED COEFFICIENT: <span id="speedCSpan"></span>
+                </p>
+                <input
+                    type="range"
+                    min="450"
+                    max="550"
+                    value="500"
+                    class="slider"
+                    id="speedC"
+                />
+            </div>
+            <div class="slidecontainer">
+                <p id="info">
+                    INITIAL POPULATION: <span id="initialSpan"></span>
+                </p>
+                <input
+                    type="range"
+                    min="75"
+                    max="250"
+                    value="100"
+                    class="slider"
+                    id="initial"
+                />
+            </div>
 
-      <div class="slidecontainer">
-        <p id="info">EAT COEFFICIENT: <span id="eatSpan"></span></p>
-        <input type="range" min="1" max="2" step="0.05" value="1" class="slider" id="eat">
-      </div>
-
-      <div class="slidecontainer">
-        <p id="info">COMPARE COEFFICIENT: <span id="compareSpan"></span></p>
-        <input type="range" min="1" max="2" step="0.05" value="1.25" class="slider" id="compare">
-      </div>
-
-      <div class="slidecontainer">
-        <p id="info">COST COEFFICIENT: <span id="costSpan"></span></p>
-        <input type="range" min="10" max="25" step="0.05" value="18.5" class="slider" id="cost">
-      </div>
-
-      <div class="slidecontainer">
-        <p id="info">INITIAL COEFFICIENT: <span id="initialSpan"></span></p>
-        <input type="range" min="75" max="250" value="100" class="slider" id="initial">
-      </div>
-
-			<script id = "sizeCoef">
-				var sizeSlider = document.getElementById("size");
-				var sizeOutput = document.getElementById("sizeSpan");
-				sizeOutput.innerhtml = sizeSlider.value;
-				sizeSlider.oninput = function () {
-				  sizeOutput.innerHTML = this.value;
-				}
-			</script>
-			<script id = "mutationCoef">
-				var mutationSlider = document.getElementById("mutation");
-				var mutationOutput = document.getElementById("mutationSpan");
-				mutationOutput.innerhtml = mutationSlider.value;
-				mutationSlider.oninput = function () {
-				  mutationOutput.innerHTML = this.value;
-				}
-			</script>
-      <script id = "reproductionCoef">
-				var reproductionSlider = document.getElementById("reproduction");
-				var reproductionOutput = document.getElementById("reproductionSpan");
-				reproductionOutput.innerhtml = reproductionSlider.value;
-				reproductionSlider.oninput = function () {
-				  reproductionOutput.innerHTML = this.value;
-				}
-			</script>
-			<script id = "hpCoef">
-				var hpSlider = document.getElementById("hp");
-				var hpOutput = document.getElementById("hpSpan");
-				hpOutput.innerhtml = hpSlider.value;
-				hpSlider.oninput = function () {
-				  hpOutput.innerHTML = this.value;
-				}
-			</script>
-      <script id = "eatCoef">
-				var eatSlider = document.getElementById("eat");
-				var eatOutput = document.getElementById("eatSpan");
-				eatOutput.innerhtml = eatSlider.value;
-				eatSlider.oninput = function () {
-				  eatOutput.innerHTML = this.value;
-				}
-			</script>
-			<script id = "costCoef">
-				var costSlider = document.getElementById("cost");
-				var costOutput = document.getElementById("costSpan");
-				costOutput.innerhtml = costSlider.value;
-				costSlider.oninput = function () {
-				  costOutput.innerHTML = this.value;
-				}
-			</script>
-			<script id = "compareCoef">
-				var compareSlider = document.getElementById("compare");
-				var compareOutput = document.getElementById("compareSpan");
-				compareOutput.innerhtml = compareSlider.value;
-				compareSlider.oninput = function () {
-				  compareOutput.innerHTML = this.value;
-				}
-			</script>
-      <script id = "initialCoef">
-				var initialSlider = document.getElementById("initial");
-				var initialOutput = document.getElementById("initialSpan");
-				initialOutput.innerhtml = initialSlider.value;
-				initialSlider.oninput = function () {
-				  initialOutput.innerHTML = this.value;
-				}
-			</script>
-    </div>
-  </body>
+            <script id="sizeCoef">
+                var sizeSlider = document.getElementById("size");
+                var sizeOutput = document.getElementById("sizeSpan");
+                sizeOutput.innerhtml = sizeSlider.value;
+                sizeSlider.oninput = function () {
+                    sizeOutput.innerHTML = this.value;
+                };
+            </script>
+            <script id="mutationCoef">
+                var mutationSlider = document.getElementById("mutation");
+                var mutationOutput = document.getElementById("mutationSpan");
+                mutationOutput.innerhtml = mutationSlider.value;
+                mutationSlider.oninput = function () {
+                    mutationOutput.innerHTML = this.value;
+                };
+            </script>
+            <script id="reproductionCoef">
+                var reproductionSlider =
+                    document.getElementById("reproduction");
+                var reproductionOutput =
+                    document.getElementById("reproductionSpan");
+                reproductionOutput.innerhtml = reproductionSlider.value;
+                reproductionSlider.oninput = function () {
+                    reproductionOutput.innerHTML = this.value;
+                };
+            </script>
+            <script id="hpCoef">
+                var hpSlider = document.getElementById("hp");
+                var hpOutput = document.getElementById("hpSpan");
+                hpOutput.innerhtml = hpSlider.value;
+                hpSlider.oninput = function () {
+                    hpOutput.innerHTML = this.value;
+                };
+            </script>
+            <script id="eatCoef">
+                var eatSlider = document.getElementById("eat");
+                var eatOutput = document.getElementById("eatSpan");
+                eatOutput.innerhtml = eatSlider.value;
+                eatSlider.oninput = function () {
+                    eatOutput.innerHTML = this.value;
+                };
+            </script>
+            <script id="costCoef">
+                var costSlider = document.getElementById("cost");
+                var costOutput = document.getElementById("costSpan");
+                costOutput.innerhtml = costSlider.value;
+                costSlider.oninput = function () {
+                    costOutput.innerHTML = this.value;
+                };
+            </script>
+            <script id="compareCoef">
+                var compareSlider = document.getElementById("compare");
+                var compareOutput = document.getElementById("compareSpan");
+                compareOutput.innerhtml = compareSlider.value;
+                compareSlider.oninput = function () {
+                    compareOutput.innerHTML = this.value;
+                };
+            </script>
+            <script id="initialCoef">
+                var initialSlider = document.getElementById("initial");
+                var initialOutput = document.getElementById("initialSpan");
+                initialOutput.innerhtml = initialSlider.value;
+                initialSlider.oninput = function () {
+                    initialOutput.innerHTML = this.value;
+                };
+            </script>
+						<script id="speedCCoef">
+								var speedCSlider = document.getElementById("speedC");
+								var speedCOutput = document.getElementById("speedCSpan");
+								speedCOutput.innerhtml = speedCSlider.value;
+								speedCSlider.oninput = function () {
+										speedCOutput.innerHTML = this.value;
+								};
+						</script>
+        </div>
+    </body>
 </html>
